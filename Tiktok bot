@@ -1,0 +1,59 @@
+import random
+import time
+import requests
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+
+class TikTokBot:
+    def __init__(self, config_path="config.json"):
+        self.config = self._load_config(config_path)
+        self.driver = None
+        self.session = requests.Session()
+        
+    def _load_config(self, path):
+        import json
+        with open(path) as f:
+            return json.load(f)
+            
+    def init_driver(self):
+        options = Options()
+        if self.config.get("headless", True):
+            options.add_argument("--headless")
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-dev-shm-usage")
+        self.driver = webdriver.Chrome(options=options)
+        
+    def login(self):
+        self.driver.get("https://www.tiktok.com/login")
+        # Implement login logic
+        # ...
+        
+    def follow_users(self, count):
+        for _ in range(count):
+            user = random.choice(self.config["users"])
+            self.driver.get(f"https://www.tiktok.com/@{user}")
+            # Click follow button
+            # ...
+            time.sleep(random.randint(5, 15))
+            
+    def like_videos(self, count):
+        for _ in range(count):
+            video = random.choice(self.config["videos"])
+            self.driver.get(video)
+            # Click like button
+            # ...
+            time.sleep(random.randint(2, 8))
+            
+    def run(self, follows=100, likes=1000):
+        self.init_driver()
+        self.login()
+        self.follow_users(follows)
+        self.like_videos(likes)
+        self.driver.quit()
+
+if __name__ == "__main__":
+    bot = TikTokBot()
+    bot.run(
+        follows=int(input("Follows (1-1000): ")),
+        likes=int(input("Likes (1-10000): "))
+    )
