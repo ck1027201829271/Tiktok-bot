@@ -1,0 +1,5 @@
+{
+  "headless": true,
+  "users": ["user1", "user2"],
+  "videos": ["video1", "video2"]
+}
